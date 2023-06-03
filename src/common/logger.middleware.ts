@@ -11,10 +11,12 @@ export class LoggerMiddleware implements NestMiddleware {
         res.on('close', () => {
             const { statusCode } = res;
             const contentLength = res.get('content-length');
-
-            this.logger.log(
-                `${method} ${url} ${statusCode} ${contentLength} - ${userAgent} ${ip}`
-            );
+            // just log the important stuff
+            if (statusCode >= 400) {
+                this.logger.error(
+                    `${method} ${url} ${statusCode} ${contentLength} - ${userAgent} ${ip}`
+                );
+            }
         });
 
         next();
